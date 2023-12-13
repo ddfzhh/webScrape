@@ -1,3 +1,7 @@
 import os
+from bs4 import BeautifulSoup
 
-print("This is webscrpe! Hurray! ")
+soup = BeautifulSoup(open("HTML/sample.html"), features = "html.parser")
+
+for tag in soup.find_all(True):
+    print(tag.name)
