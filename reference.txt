@@ -1,0 +1,5 @@
+Send email using python: 
+https://www.youtube.com/watch?v=g_j6ILT-X0k
+
+Crash course web scrapping: 
+https://www.youtube.com/watch?v=XVv6mJpFOb0
