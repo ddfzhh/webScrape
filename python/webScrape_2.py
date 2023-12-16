@@ -2,6 +2,13 @@ import os
 import sys
 import requests
 from bs4 import BeautifulSoup
+from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import ssl
+import smtplib
+from jinja2 import Environment, FileSystemLoader
+
 
 def mojo_weekly_scrape(weekly_website):
     #get the website from requests, and prepare the beautifulSoup object
@@ -80,31 +87,102 @@ def mojo_weekly_scrape(weekly_website):
     for list in listOfDic:
         print(list)
 
-def send_email(sender,receiver, appPassword):
     
     
-
-
-
-
-
-
-
     '''test write into html file'''
     with open('html/test.html', 'w') as html_file:
         for row in rows[1:31]:
             html_file.write(row.prettify())
             html_file.write('\n\n')
+
+    return listOfDic
+
+
+
+def send_email(sender, receivers, appPassword, html_file):
+    #Write down the subject and the body of the email
+    subject = 'Your Weekly Boxoffice Report'
+    body = html_file
     
+    #fill the em class with the content and other metadata
+    for receiver in receivers:
+        em = EmailMessage()
+        em['From'] = sender
+        em['To'] = receiver
+        em['Subject'] = subject
+        em.set_content(body)
+
+        table = MIMEText(html_file, 'html')
+        em.attach(table)
+        
+        #Use ssl to stay secure
+        context = ssl.create_default_context()
+
+        #Send the email
+        with smtplib.SMTP_SSL('smtp.gmail.com',465,context = context) as smtp:
+            smtp.login(sender, appPassword)
+            smtp.sendmail(sender, receiver, em.as_string())
+
+
+
+def weekly_html(listfOfDic):
+    html_file = '''
+    <html>
+        <head></head>
+        <body>
+            <h2>Your Weekly Boxoffice Report</h2>
+            <table>
+                <tr>
+                    <th>Rank</th>
+                    <th>LW Rank</th>
+                    <th>Movie</th>
+                    <th>Weekly Gross</th>
+                    <th>Weekly Gross Change LW</th>
+                    <th>Theaters</th>
+                    <th>TheatersChange</th>
+                    <th>Per Theater AVG Gross</th>
+                    <th>Total Gross</th>
+                    <th>Weeks Released</th>
+                    <th>Distributor</th>
+                </tr>
+                {% for obj in listOfDic %}
+                    <tr>
+                        <td>{{ listOfDic.rank }}</td>
+                        <td>{{ listOfDic.LW_rant }}</td>
+                        <td>{{ listOfDic.movie }}</td>
+                        <td>{{ listOfDic.weeklyGross }}</td>
+                        <td>{{ listOfDic.weeklyGrossChangeLW }}</td>
+                        <td>{{ listOfDic.theaters }}</td>
+                        <td>{{ listOfDic.theaterChange }}</td>
+                        <td>{{ listOfDic.perTheaterAVGGross }}</td>
+                        <td>{{ listOfDic.totalGross }}</td>
+                        <td>{{ listOfDic.distributor }}</td>
+                        <td>{{ listOfDic.weeksReleased }}</td>
+                        
+                    </tr>
+            {% endfor %}
+            </table>
+        </body>
+    </html>
+
+'''
+    
+    
+    return html_file
 
     
 
 
 def main():
-    mojo_weekly_scrape(weekly_website)
+    weekly_listOfDic = mojo_weekly_scrape(weekly_website)
+    html_file = weekly_html(weekly_listOfDic)
+    send_email(sender, receiver, appPassword, html_file)
 
 #Provide value for variables
 weekly_website = "https://www.boxofficemojo.com/weekly/2023W49/?ref_=bo_wly_table_1"
+sender = 'kytanmov@gmail.com'
+receivers = ['ktan5@sva.edu', 'ddfzhh@foxmail.com']
+appPassword = 'psjfdsycvcscpnvd'
 
 #run the function
 main()
