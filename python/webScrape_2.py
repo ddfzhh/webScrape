@@ -2,12 +2,12 @@ import os
 import sys
 import requests
 from bs4 import BeautifulSoup
-from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import ssl
 import smtplib
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Template
+from helper import sender, receivers, appPassword
 
 
 def mojo_weekly_scrape(weekly_website):
@@ -83,36 +83,25 @@ def mojo_weekly_scrape(weekly_website):
         
         #append the dic to the list
         listOfDic.append(dic)
-    
-    for list in listOfDic:
-        print(list)
-
-    
-    
-    '''test write into html file'''
-    with open('html/test.html', 'w') as html_file:
-        for row in rows[1:31]:
-            html_file.write(row.prettify())
-            html_file.write('\n\n')
 
     return listOfDic
 
 
 
-def send_email(sender, receivers, appPassword, html_file):
+def send_email(sender, receivers, appPassword, html_template):
     #Write down the subject and the body of the email
     subject = 'Your Weekly Boxoffice Report'
-    body = html_file
+    body = "This is your weekly movie report!"
     
     #fill the em class with the content and other metadata
     for receiver in receivers:
-        em = EmailMessage()
+        em = MIMEMultipart()
         em['From'] = sender
         em['To'] = receiver
         em['Subject'] = subject
-        em.set_content(body)
+        #em.set_content(body)
 
-        table = MIMEText(html_file, 'html')
+        table = MIMEText(html_template, 'html')
         em.attach(table)
         
         #Use ssl to stay secure
@@ -123,41 +112,44 @@ def send_email(sender, receivers, appPassword, html_file):
             smtp.login(sender, appPassword)
             smtp.sendmail(sender, receiver, em.as_string())
 
+        print(f'Successfully sent email to {receiver} from {sender}')
+
 
 
 def weekly_html(listfOfDic):
-    html_file = '''
+    html = '''
     <html>
-        <head></head>
+        <head>
+        </head>
         <body>
-            <h2>Your Weekly Boxoffice Report</h2>
-            <table>
+            <h2 style="text-align:center;">Your Weekly Box Office Report (US)</h2>
+            <table style="border-collapse: collapse; width: 100%;">
                 <tr>
-                    <th>Rank</th>
-                    <th>LW Rank</th>
-                    <th>Movie</th>
-                    <th>Weekly Gross</th>
-                    <th>Weekly Gross Change LW</th>
-                    <th>Theaters</th>
-                    <th>TheatersChange</th>
-                    <th>Per Theater AVG Gross</th>
-                    <th>Total Gross</th>
-                    <th>Weeks Released</th>
-                    <th>Distributor</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Rank</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">LW Rank</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Movie</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Weekly Gross</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Weekly Gross Change LW</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Theaters</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Theaters Change</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Per Theater AVG Gross</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Total Gross</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Weeks Released</th>
+                    <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Distributor</th>
                 </tr>
                 {% for obj in listOfDic %}
                     <tr>
-                        <td>{{ listOfDic.rank }}</td>
-                        <td>{{ listOfDic.LW_rant }}</td>
-                        <td>{{ listOfDic.movie }}</td>
-                        <td>{{ listOfDic.weeklyGross }}</td>
-                        <td>{{ listOfDic.weeklyGrossChangeLW }}</td>
-                        <td>{{ listOfDic.theaters }}</td>
-                        <td>{{ listOfDic.theaterChange }}</td>
-                        <td>{{ listOfDic.perTheaterAVGGross }}</td>
-                        <td>{{ listOfDic.totalGross }}</td>
-                        <td>{{ listOfDic.distributor }}</td>
-                        <td>{{ listOfDic.weeksReleased }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.rank }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.LW_rank }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.movie }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.weeklyGross }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.weeklyGrossChangeLW }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.theaters }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.theatersChange }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.perTheaterAVGGross }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.totalGross }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.weeksReleased }}</td>
+                        <td style="border:1px solid #dddddd; text-align:center; padding:8px;">{{ obj.distributor }}</td>
                         
                     </tr>
             {% endfor %}
@@ -166,26 +158,28 @@ def weekly_html(listfOfDic):
     </html>
 
 '''
-    
-    
-    return html_file
+    #Make the template and render the template:
+    template = Template(html)
+    html_template = template.render(listOfDic = listfOfDic)
+
+    return html_template
 
     
 
 
 def main():
     weekly_listOfDic = mojo_weekly_scrape(weekly_website)
-    html_file = weekly_html(weekly_listOfDic)
-    send_email(sender, receiver, appPassword, html_file)
+    html_template = weekly_html(weekly_listOfDic)
+    send_email(sender, receivers, appPassword, html_template)
 
 #Provide value for variables
 weekly_website = "https://www.boxofficemojo.com/weekly/2023W49/?ref_=bo_wly_table_1"
 sender = 'kytanmov@gmail.com'
-receivers = ['ktan5@sva.edu', 'ddfzhh@foxmail.com']
+receivers = ['ktan5@sva.edu', 'kytan@foxmail.com']
 appPassword = 'psjfdsycvcscpnvd'
 
 #run the function
-main()
+main() 
     
 
 
