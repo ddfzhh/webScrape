@@ -22,36 +22,69 @@ def mojo_weekly_scrape(weekly_website):
         
         #create a dic to store all the pairs to append to the list
         dic = {}
+        
         #Rank
-        rank = row.find('td', class_ = "a-text-right mojo-header-column mojo-truncate mojo-field-type-rank mojo-sort-column").text
+        rank = row.find('td', class_ = "a-text-right mojo-header-column mojo-truncate mojo-field-type-rank mojo-sort-column")
         #type(rank) = str
-        dic['rank'] = rank
+        dic['rank'] = rank.string
 
         #LW Rank
-        LW_rank = row.find('td', class_="a-text-right mojo-field-type-positive_integer").text
+        LW_rank = rank.next_sibling
         #type(LW_rank) = str
-        dic['LW_rank'] = LW_rank
+        dic['LW_rank'] = LW_rank.string
 
         #Movie
-        movie = row.find('a', class_ = "a-link-normal").text
-        dic['movie'] = movie
+        movie = LW_rank.next_sibling
+        dic['movie'] = movie.string
 
         #weeklyGross
-        weeklyGross = row.find('td', class_="a-text-right mojo-field-type-money mojo-estimatable").text
-        dic['weeklyGross'] = weeklyGross
+        weeklyGross = movie.next_sibling
+        dic['weeklyGross'] = weeklyGross.string
 
-        #weeklyGross_soup
-        weeklyGross_soup = row.find('td', class_ ="a-text-right mojo-field-type-money mojo-estimatable")
-        grossChangeWeekly = weeklyGross_soup.next_sibling.string #get it based on the previous element since there are different pattern for this part
-        dic['grossChangeWeekly'] = grossChangeWeekly
+        #weeklyGrossChangeLW
+        weeklyGrossChangeLW = weeklyGross.next_sibling
+        dic['weeklyGrossChangeLW'] = weeklyGrossChangeLW.string
+
+        #theaters
+        theaters = weeklyGrossChangeLW.next_sibling
+        dic['theaters'] = theaters.string
+
+        #theatersChange
+        theatersChange = theaters.next_sibling
+        dic['theatersChange'] = theatersChange.string
+        
+        #perTheaterAVGGross
+        perTheaterAVGGross = theatersChange.next_sibling
+        dic['perTheaterAVGGross'] = perTheaterAVGGross.string
+        
+        #totalGross
+        totalGross = perTheaterAVGGross.next_sibling
+        dic['totalGross'] = totalGross.string
+
+        #weeksReleased
+        weeksReleased = totalGross.next_sibling
+        dic['weeksReleased'] = weeksReleased.string
+
+        #distributor
+        distributor = weeksReleased.next_sibling
+        if distributor.text == None:
+            distributor = '-'
+            dic['distributor'] = distributor
+        else:
+            dic['distributor'] = distributor.text.replace('\n', '')
+        
         
         #append the dic to the list
         listOfDic.append(dic)
+    
     for list in listOfDic:
         print(list)
-    '''
+
+def send_email(sender,receiver, appPassword):
     
-    '''
+    
+
+
 
 
 
