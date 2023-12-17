@@ -1,5 +1,5 @@
 # Weekly Box Office Email
-#### Video Demo:  (https://vimeo.com/895495293/7b252d492c)
+#### Video Demo:  (https://youtu.be/Fe-n8KmPfII)
 
 ### Description
 This is my final project for CS50's Intro to Computer Science class. 
