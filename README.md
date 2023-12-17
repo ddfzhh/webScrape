@@ -9,12 +9,16 @@ The goal of this project is to get data from [Box Office Mojo](https://www.boxof
 ## How to Use
 ### 1. Preparing the environment
 When located to the directory, in command line type:
+
 `pip install -r requirements.txt`
+
 This will install all the libraries that are used in this project. 
 
 ### 2. Setting up email accounts
 Open `helper.py`, and enter the email address for the `sender`and the `receiver`. You will also need to enter your `appPassword`, which is a password that apps can use to log into the sender's email account. 
-You can find a tutorial on how to create a App Password for Gmail [here](https://www.lifewire.com/get-a-password-to-access-gmail-by-pop-imap-2-1171882)
+
+You can find a tutorial on how to create a App Password for Gmail [here](https://www.lifewire.com/get-a-password-to-access-gmail-by-pop-imap-2-1171882).
+
 You can enter multiple email addresses as a list for the `receiver` variable if you have multiple mailboxes that you would like to receive the email. 
 
 ### 3. Run the code! 
