@@ -26,22 +26,13 @@ Run `main.py` and you will see the email in your mailbox in no time!
 
 ### 4. Optional: Use task scheduler(for Windows system) to run the code every week.
 You can utilize [task scheduler](https://www.tomsguide.com/how-to/how-to-use-task-scheduler-on-windows) to send an email to yourself every week!  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*
+*
+*
+*
+*
+*
+*
 
 ## Disclaimer for [Weekly Box Office Email]
 This project, titled "[Weekly Box Office Email]," is a personal, non-commercial project developed for educational/research purposes only.
