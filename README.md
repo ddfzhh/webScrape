@@ -35,8 +35,8 @@ You can utilize [task scheduler](https://www.tomsguide.com/how-to/how-to-use-tas
 *
 
 *
-## Disclaimer for [Weekly Box Office Email]
-This project, titled "[Weekly Box Office Email]," is a personal, non-commercial project developed for educational/research purposes only.
+## Disclaimer for Weekly Box Office Email
+This project, titled "Weekly Box Office Email," is a personal, non-commercial project developed for educational/research purposes only.
 
 ### Data Source
 The data used in this project has been sourced from [Box Office Mojo](https://www.boxofficemojo.com). This data is used under the premise of personal, non-commercial use, in alignment with Box Office Mojo's Terms of Use.
