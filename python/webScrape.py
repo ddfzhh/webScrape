@@ -121,6 +121,7 @@ def weekly_html(listfOfDic):
         </head>
         <body>
             <h2 style="text-align:center;">Your Weekly Box Office Report (US)</h2>
+            <br><br>
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
                     <th style="border:1px solid #dddddd; text-align:center; padding:8px;">Rank</th>
@@ -152,6 +153,12 @@ def weekly_html(listfOfDic):
                     </tr>
             {% endfor %}
             </table>
+        <div style = "text-align:center; font-size:0.5vw;">
+            Data from 
+            <a href="https://www.boxofficemojo.com/">Box Office Mojo</a>
+            .
+        </div>
+        <br><br>
         </body>
     </html>
 
@@ -172,32 +179,6 @@ def main():
 
 #Provide value for variables
 weekly_website = "https://www.boxofficemojo.com/weekly/2023W49/?ref_=bo_wly_table_1"
-sender = 'kytanmov@gmail.com'
-receivers = ['ktan5@sva.edu', 'kytan@foxmail.com']
-appPassword = 'psjfdsycvcscpnvd'
 
 #run the function
 main() 
-    
-
-
-
-
-
-
-
-
-
-
-'''
-1. Create a list of dictiondaries: [{'Rank' : 1, 'name':'The boy and the Heron', 'Gross':'$13,011,722'}
-                                    {'Rank' : 2, 'name':'The Hunger Games', 'Gross':'$138,604,559'}]
-
-2. Get the things into a email and send it to my email. Need to enable two steps verification. Need to have an app password. 
-Also need to try to not hard code the password or email directly into the script. 
-
-Use html to format the dictionaries in python, and generate an html table that will work in gmail. 
-Think about design, metadata and scale. Make sure it is easily readable. 
-
-
-'''
