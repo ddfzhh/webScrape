@@ -4,8 +4,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import ssl
 import smtplib
-from jinja2 import Environment, FileSystemLoader, Template
+from jinja2 import Template
 from helper import sender, receivers, appPassword
+from datetime import datetime
 
 
 def mojo_weekly_scrape(weekly_website):
@@ -97,7 +98,6 @@ def send_email(sender, receivers, appPassword, html_template):
         em['From'] = sender
         em['To'] = receiver
         em['Subject'] = subject
-        #em.set_content(body)
 
         table = MIMEText(html_template, 'html')
         em.attach(table)
@@ -115,12 +115,18 @@ def send_email(sender, receivers, appPassword, html_template):
 
 
 def weekly_html(listfOfDic):
+    
+    #get the current data
+    current_date = datetime.now().strftime("%B %d, %Y")
+    
     html = '''
     <html>
         <head>
         </head>
         <body>
             <h2 style="text-align:center;">Your Weekly Box Office Report (US)</h2>
+            <br>
+            <h4 style="text-align:center;">{{ current_date }}</h4>
             <br><br>
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
@@ -153,19 +159,20 @@ def weekly_html(listfOfDic):
                     </tr>
             {% endfor %}
             </table>
-        <div style = "text-align:center; font-size:0.5vw;">
-            Data from 
-            <a href="https://www.boxofficemojo.com/">Box Office Mojo</a>
+            <br><br>
+            <div style = "text-align:center; font-size:0.5vw;">
+                Data from 
+                <a href="https://www.boxofficemojo.com/">Box Office Mojo</a>
             .
-        </div>
-        <br><br>
+            </div>
+            <br>
         </body>
     </html>
 
 '''
     #Make the template and render the template:
     template = Template(html)
-    html_template = template.render(listOfDic = listfOfDic)
+    html_template = template.render(listOfDic = listfOfDic, current_date = current_date)
 
     return html_template
 
