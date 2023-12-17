@@ -6,6 +6,10 @@ This is my final project for CS50's Intro to Computer Science class.
 
 The goal of this project is to get data from [Box Office Mojo](https://www.boxofficemojo.com) and send an email weekly to my own email, with an HTML table showcasing the top 20 highest box office films of the week. 
 
+Inside the requirements file, you will see the libraries that are required to run the code. 
+
+In the python folder, there are two files: main.py and helper.py
+
 ## How to Use
 ### 1. Preparing the environment
 When located to the directory, in command line type:
